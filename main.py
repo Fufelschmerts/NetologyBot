@@ -9,9 +9,9 @@ show - показать добавленные задачи
 exit - остановить Бота
 '''
 
-today = {}
-tomorrow = {}
-other = {}
+today = list()
+tomorrow = list()
+other = dict()
 
 run = True
 
@@ -22,19 +22,19 @@ while run:
     elif command == 'add':
         data = input("Введите дату: ")
         task = input("Введите задачу: ")
-        if data == 'Сегодня':
-            today[data] = task
+        if data.lower() == 'сегодня':
+            today.append(task)
         elif data.lower() == 'завтра':
-            tomorrow[data] = task
+            tomorrow.append(task)
         else:
             other[data] = task
         print(f'Задача "{task}" добавлена')
     elif command == 'show':
-        if today == {}:
+        if not today:
             print('Задач на сегодня нет')
         else:
             print('Задачи на сегодня: ', today)
-        if tomorrow == {}:
+        if not tomorrow:
             print('Задач на завтра нет')
         else:
             print('Задачи на завтра: ', tomorrow)
