@@ -7,55 +7,96 @@ help - показать инфу о Боте
 add - добавить задачу в список (запросить у пользователя)
 show - показать добавленные задачи
 exit - остановить Бота
+show all - показать все задачи
+random - добавить случайную задачу на сегодня
 '''
 
-today = list()
-tomorrow = list()
-other = dict()
+import random
 
-run = True
+# функция для случайной задачи
 
-while run:
-    command = input('Введите команду: ')
-    if command == 'help':
-        print(HELP)
-    elif command == 'add':
-        data = input("Введите дату: ")
-        task = input("Введите задачу: ")
-        if data.lower() == 'сегодня':
-            today.append(task)
-        elif data.lower() == 'завтра':
-            tomorrow.append(task)
-        else:
-            other[data] = task
-        print(f'Задача "{task}" добавлена')
-    elif command == 'show':
-        if not today:
-            print('Задач на сегодня нет')
-        else:
-            print('Задачи на сегодня: ', today)
-        if not tomorrow:
-            print('Задач на завтра нет')
-        else:
-            print('Задачи на завтра: ', tomorrow)
-        if other == {}:
-            print('Задач на другие даты нет')
-        else:
-            print('Другие даты: ', other)
-    elif command == 'exit':
-        print('Спасибо за использование! До свидания!')
-        break
+
+def random_task():
+    tasks = ['Позвонить в сервис', 'Купить хлеб', 'Захватить мир', 'Посмотреть сериал', 'Поиграть в игру']
+    return random.choice(tasks)
+
+
+today_task = list()
+tomorrow_task = list()
+other_task = dict()
+
+is_running = True
+
+
+def add_other_todo(date, task):
+    if date in other_task:
+        other_task[date] += f', {task}'
     else:
-        print('Неизвестная команда')
-        break
+        other_task[date] = task
+
+
+while is_running:
+    command = input('Введите команду: ')
+    if command.lower() == 'help':
+        print(HELP)
+        continue
+    elif command.lower() == '':
+        print('Вы не ввели команду!')
+        continue
+    elif command.lower() == 'add':
+        date = input("Введите дату: ")
+        task = input("Введите задачу: ")
+        if date == '':
+            print('Вы не ввели дату!')
+            continue
+        elif date.lower() == 'сегодня' or date.lower() == 'today':
+            today_task.append(f'📌{task}')
+        elif date.lower() == 'завтра' or date.lower() == 'tomorrow':
+            tomorrow_task.append(f'📌{task}')
+        else:
+            add_other_todo(date, task)
+        print(f'Задача "{task}" на {date} добавлена')
+        continue
+    elif command == 'show':
+        date = input("Введите дату задач: ")
+        if date == '':
+            print('Вы не ввели дату!')
+            continue
+        elif date.lower() == 'сегодня' or date.lower() == 'today':
+            if not today_task:
+                print("Задач на сегодня нет")
+            else:
+                print(f"Задачи на сегодня:\n{'\n'.join(today_task)}")
+                continue
+        elif date.lower() == 'завтра' or date.lower() == 'tomorrow':
+            if not tomorrow_task:
+                print('Задач на завтра нет')
+            else:
+                print(f"Задачи на завтра:\n{'\n'.join(tomorrow_task)}")
+                continue
+        else:
+            if date in other_task:
+                print(f"Задачи на {date}:\n📌{other_task[date]}")
+                continue
+            else:
+                print(f"Задач на {date} нет")
+    elif command == 'show all':
+        if not today_task and not tomorrow_task and other_task == {}:  # Проверка на пустые списки
+            print("Задач нет")
+        if today_task:
+            print(f"Задачи на сегодня:\n{'\n'.join(today_task)}")
+        if tomorrow_task:
+            print(f"Задачи на завтра:\n{'\n'.join(tomorrow_task)}")
+        if other_task:
+            print(f"Другие даты:\n📌{'\n📌'.join([f'{key}: {value}' for key, value in other_task.items()])}")
+    elif command.lower() == 'random':
+        print("Случайная задача добавлена!")
+        today_task.append(f'📌{random_task()}')
+    elif command.lower() == 'exit':
+        print('Спасибо за использование! И до свидания!')
+        continue
+    else:
+        print("Неизвестная команда! Введите help, чтобы узнать список доступных команд.")
+        continue
 
 print('Заходите ещё!')
-
-# todo_dic = {}  # Создаем пустой словарь
-#
-# for i in range(3):  # Запрашиваем данные у пользователя 3 раза
-#     data = input("Введите дату: ")
-#     todo = input("Введите задачу: ")
-#     todo_dic[data] = todo  # Записываем данные в словарь
-#
-# print(todo_dic)
