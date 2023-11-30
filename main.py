@@ -1,8 +1,20 @@
 import random
+import telebot
 
 # Телеграм бот на Питоне по бесплатному курсу от Нетологии
 
-# Практика 1. Запрос данных у пользователей.
+token = 'token telegram bot'
+
+bot = telebot.TeleBot(token)
+
+
+@bot.message_handler(content_types=['text'])
+def echo(message):
+    bot.send_message(message.chat.id, message.text)
+
+
+bot.polling(none_stop=True)
+
 
 HELP = '''
 help - показать инфу о Боте
@@ -19,9 +31,9 @@ random - добавить случайную задачу на сегодня
 task_array = ['Позвонить в сервис', 'Купить хлеб', 'Захватить мир', 'Посмотреть сериал', 'Поиграть в игру']
 
 
-def count_letter(words, letter):
+def count_letter(words_list, letter):
     result = 0
-    for word in words:
+    for word in words_list:
         if letter in word:
             result += 1
     return result
